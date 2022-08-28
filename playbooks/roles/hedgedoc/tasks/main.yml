@@ -20,7 +20,7 @@
     pull: true
     hostname: hedgedoc_db
     image: lscr.io/linuxserver/mariadb:latest
-    network_mode: default
+    network_mode: "{{ network }}"
     networks:
       - name: "{{ network }}"
     env:
@@ -52,7 +52,7 @@
       DB_PASS: testing1234
       # CMD_DOMAIN: localhost
       CMD_PROTOCOL_USESSL: "false" # optional
-    network_mode: default
+    network_mode: "{{ network }}"
     networks:
       - name: "{{ network }}"
     ports:

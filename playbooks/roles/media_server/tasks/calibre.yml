@@ -35,6 +35,6 @@
         target: /downloads
         type: bind
         read_only: false
-    network_mode: default
+    network_mode: "{{ network }}"
     networks:
       - name: "{{ network }}"

@@ -1,11 +1,12 @@
 ---
-- name: Ensure galaxy roles installed
-  hosts: all
-  become: true
-  tasks:
-    - name: Install roles from requirements.yml
-      community.general.ansible_galaxy_install:
-        requirements_file: requirements.yml
+# - name: Ensure galaxy roles installed
+#   hosts: all
+#   become: true
+#   tasks:
+#     - name: Install roles from requirements.yml
+#       community.general.ansible_galaxy_install:
+#         type: both
+#         requirements_file: /requirements.yml
 - name: Asdf
   become: true
   hosts: all

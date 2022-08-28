@@ -14,7 +14,7 @@
     name: mariadb
     hostname: mariadb
     image: ghcr.io/linuxserver/mariadb:latest
-    network_mode: default
+    network_mode: "{{ network }}"
     networks:
       - name: "{{ network }}"
     ports:

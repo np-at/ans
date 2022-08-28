@@ -23,7 +23,7 @@
       TZ: "{{ tz }}"
     ports:
       - 8337:8337/tcp
-    network_mode: default
+    network_mode: "{{ network }}"
     mounts:
       - source: "{{ config_path }}/beets"
         target: /config
