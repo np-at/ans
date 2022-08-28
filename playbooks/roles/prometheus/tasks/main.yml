@@ -1,14 +1,15 @@
 ---
+- name: Ensure jmespath installed
+  ansible.builtin.package:
+    name: jmespath
+    state: present
+
 - name: Preflight
   ansible.builtin.include_tasks: preflight.yml
   tags:
     - prometheus_configure
     - prometheus_install
     - prometheus_run
-- name: Ensure jmespath installed
-  ansible.builtin.package:
-    name: jmespath
-    state: present
 
 - name: Ensure dir exists
   become: true
