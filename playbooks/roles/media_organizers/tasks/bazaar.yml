@@ -20,6 +20,7 @@
       TZ: "{{ tz }}"
     ports:
       - 6767:6767/tcp
+    network_mode: default
     networks:
       - name: "{{ network }}"
     mounts:

@@ -1,6 +1,6 @@
 # beets/tasks/main.yml
 ---
-- name: ensure dir exists
+- name: Ensure dir exists
   become: true
   ansible.builtin.file:
     path: "{{ config_path }}/beets"
@@ -8,7 +8,7 @@
     owner: "{{ puid }}"
     group: "{{ pgid }}"
     state: directory
-- name: beets
+- name: Beets
   community.docker.docker_container:
     name: beets
     state: started
@@ -23,6 +23,7 @@
       TZ: "{{ tz }}"
     ports:
       - 8337:8337/tcp
+    network_mode: default
     mounts:
       - source: "{{ config_path }}/beets"
         target: /config
@@ -36,6 +37,6 @@
         target: /music
         type: bind
         read_only: false
-- name: test set fact
+- name: Test set fact
   ansible.builtin.set_fact:
-    var3: "{{ var3 | default({}) | combine({'asdf':'test'}) }}"
+    var3: "{{ var3 | default({}) | combine({'asdf': 'test'}) }}"

@@ -8,10 +8,10 @@
     group: "{{ pgid }}"
     state: directory
 # nzbhydra2
-- name: set db
+- name: Set db
   ansible.builtin.set_fact:
-    databases: "{{ databases | default({}) | combine({'nzbhydra2': {'name':'nzbhydra','user':'nzbhuser','pass':'asdfasdfas'}}) }}"
-- name: nzbhydra2
+    databases: "{{ databases | default({}) | combine({'nzbhydra2': {'name':'nzbhydra', 'user':'nzbhuser', 'pass':'asdfasdfas'}}) }}"
+- name: Nzbhydra2
   community.docker.docker_container:
     name: nzbhydra2
     image: lscr.io/linuxserver/nzbhydra2:latest
@@ -27,6 +27,7 @@
       TZ: "{{ tz }}"
     ports:
       - 5076:5076/tcp
+    network_mode: default
     networks:
       - name: "{{ network }}"
     mounts:

@@ -13,13 +13,14 @@
     volume_name: hedgedoc_db
     state: present
   register: hedgedoc_db_vol_results
-- name: hedgedoc db
+- name: Hedgedoc db
   community.docker.docker_container:
     name: hedgedoc_db
     state: absent
     pull: true
     hostname: hedgedoc_db
     image: lscr.io/linuxserver/mariadb:latest
+    network_mode: default
     networks:
       - name: "{{ network }}"
     env:
@@ -32,7 +33,7 @@
       MYSQL_USER: hedgedoc
     volumes:
       - hedgedoc_db:/config
-- name: hedgedoc
+- name: Hedgedoc
   community.docker.docker_container:
     name: hedgedoc
     state: absent
@@ -51,7 +52,7 @@
       DB_PASS: testing1234
       # CMD_DOMAIN: localhost
       CMD_PROTOCOL_USESSL: "false" # optional
-
+    network_mode: default
     networks:
       - name: "{{ network }}"
     ports:

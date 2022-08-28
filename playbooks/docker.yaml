@@ -1,4 +1,11 @@
 ---
+- name: Ensure galaxy roles installed
+  hosts: all
+  become: true
+  tasks:
+    - name: Install roles from requirements.yml
+      community.general.ansible_galaxy_install:
+        requirements_file: requirements.yml
 - name: Asdf
   become: true
   hosts: all
@@ -20,6 +27,7 @@
     - vars/main.yaml
   hosts: all
   diff: true
+
   # tasks:
   #   - name: include roles
   #     loop:
@@ -52,16 +60,14 @@
     - mariadb
     - prometheus
 
-- name: docker purge
+- name: Docker purge
   hosts: all
   tasks:
-    - name: purge
+    - name: Purge
       community.docker.docker_prune:
         images: true
         containers: true
         builder_cache: true
-        
-
 # - name: run docker configs
 #   hosts: all
 #   diff: true

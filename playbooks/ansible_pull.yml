@@ -1,0 +1,9 @@
+---
+- name: Set up pull
+  become: true
+  hosts: all
+  tasks:
+    - name: Set cron job
+      ansible.builtin.cron:
+        name: ansible_pull
+        job: "ansible-pull --vault-password-file=/root/pass"

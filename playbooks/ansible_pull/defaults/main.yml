@@ -1,0 +1,3 @@
+---
+pass_file: false
+inven_file: /etc/ansible/hosts

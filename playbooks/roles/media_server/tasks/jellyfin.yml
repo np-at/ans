@@ -35,5 +35,6 @@
         target: /media
         type: bind
         read_only: false
+    network_mode: default
     networks:
       - name: "{{ network }}"

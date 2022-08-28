@@ -59,6 +59,7 @@
     state: started
     cpus: 0.5
     pull: true
+    network_mode: default
     mounts:
       - source: "{{ config_path }}/prometheus/prometheus.yml"
         target: "/etc/prometheus/prometheus.yml"
