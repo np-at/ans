@@ -1,6 +1,6 @@
 ---
 - name: Ensure jmespath installed
-  ansible.builtin.package:
+  ansible.builtin.pip:
     name: jmespath
     state: present
 
