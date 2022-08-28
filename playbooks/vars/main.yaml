@@ -1,0 +1,6 @@
+---
+tz: America/Los_Angeles
+config_path: /home/archon
+download_base: /srv/media/downloads
+library_path: /srv/media/libraries
+network: archon
