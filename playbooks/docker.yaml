@@ -1,0 +1,126 @@
+---
+- name: Asdf
+  become: true
+  hosts: all
+  diff: true
+
+  tasks:
+    - name: Ensure docker sdk present
+      ansible.builtin.pip:
+        state: present
+        name: docker
+    - name: Network
+      community.docker.docker_network:
+        name: archon
+        state: present
+        driver: bridge
+        appends: true
+- name: Roles?
+  vars_files:
+    - vars/main.yaml
+  hosts: all
+  diff: true
+  # tasks:
+  #   - name: include roles
+  #     loop:
+  #       - beets
+  #       - dl_indexers
+  #       - ombi
+  #       - unmanic
+  #     ansible.builtin.include_role:
+  #       name: "{{ item }}"
+  #     register: _container_job_instance
+  #     async: 300
+  #     poll: 0
+  #   - name: wait for finish
+  #     ansible.builtin.async_status:
+  #       jid: "{{ item.ansible_job_id }}"
+  #     register: _jobs
+  #     until: _jobs.finished
+  #     delay: 5
+  #     retries: 5
+  #     loop: "{{ _container_job_instance.results }}"
+  roles:
+    # - hedgedoc
+    - beets
+    - dl_indexers
+    # - ombi
+    # - unmanic
+    - media_server
+    # - ext_interface
+    - media_organizers
+    - mariadb
+    - prometheus
+
+- name: docker purge
+  hosts: all
+  tasks:
+    - name: purge
+      community.docker.docker_prune:
+        images: true
+        containers: true
+        builder_cache: true
+        
+
+# - name: run docker configs
+#   hosts: all
+#   diff: true
+#   vars:
+#     # test: 1
+#     # template1: "{{ lookup('./templates/basic copy.jinja2') }}"
+#     pgid: 992
+#     puid: 996
+#     tz: "Los_Angeles"
+#     config_path: /home/archon
+#     download_base: /srv/media/downloads
+#     library_path: /srv/media/libraries
+#     network: archon
+#     mysql_password: asdf
+#     mysql_root_password: asdf1234
+#     mysql_user: msuer
+#   tasks:
+#   # ansible.builtin.debug:
+#     # var: item
+#     - name: asdf
+#       ansible.builtin.include_tasks: "{{ item }}"
+#         # msg: "{{ lookup('fileglob','../containers/*.yaml',wantList=true) }}"
+#       loop: "{{ lookup('fileglob','../tasks/*.yaml',wantlist=true) }}"
+#     - name: prune
+#       community.docker.docker_prune:
+#         builder_cache: true
+#         containers: true
+#         images: true
+
+# - name: ff
+#   async: 40
+#   community.docker.docker_host_info:
+#     debug: false
+#     containers: true
+#     volumes: true
+#     networks: true
+#     images: true
+#     verbose_output: true
+#   register: docker_host_info
+
+# - name: debug docker_host_info
+#   ansible.builtin.debug:
+#     var: docker_host_info.containers
+#   # loop: "{{ docker_host_info['containers'] }}"
+#   # loop_control:
+#   #   label: "{{ item.Names[0] }}"
+
+# - name: container inspect
+#   community.docker.docker_container_info:
+#     name: "{{ item.Names[0] }}"
+#   loop: "{{ docker_host_info['containers'] }}"
+#   async: 30
+#   poll: 5
+#   loop_control:
+#     label: "{{ item.Names[0] }}"
+#   register: inspections
+# - name: dcompose
+#   community.docker.docker_compose:
+#     project_src: /home/dietpi/mediaConf/Archon/docker-compose
+#     files:
+#       - comprehensive.yml
+#     env_file: ./.env

@@ -1,0 +1,10 @@
+# roles/media_server/tasks/main.yml
+---
+- name: jellyfin
+  when: false
+  ansible.builtin.include_tasks:
+    file: jellyfin.yml
+
+- name: calibre
+  ansible.builtin.include_tasks:
+    file: calibre.yml

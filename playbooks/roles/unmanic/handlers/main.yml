@@ -1,0 +1,14 @@
+# unmanic/handlers/main.yml
+---
+- name: unmanic_session_mod
+  when: srunning and unmanic_container_results.changed
+  vars:
+    srunning: "{{ ((unmanic_container_results.container |default({})).State.Status |default(''))=='running' | default(false) }}"
+  community.docker.docker_container_exec:
+    container: unmanic
+    argv:
+      - sed
+      - -i
+      - -E
+      - s/^([ \t]+)self\.level = int\(.*/\1self.level = 10/ig
+      - /usr/local/lib/python3.8/dist-packages/unmanic/libs/session.py

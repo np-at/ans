@@ -1,0 +1,39 @@
+# roles/media_server/tasks/main.yml
+---
+- name: ensure dir exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ config_path }}/jellyfin"
+    mode: 0777
+    owner: "{{ puid }}"
+    group: "{{ pgid }}"
+    state: directory
+- name: Jellyfin
+  community.docker.docker_container:
+    name: Jellyfin
+    pull: true
+    cpus: 1.5
+    state: started
+    image: ghcr.io/linuxserver/jellyfin:latest
+    env:
+      JELLYFIN_PublishedServerUrl: ${JELLYFIN_PublishedServerUrl} # server announce address
+      PGUID: "{{ pgid | string }}"
+      PUID: "{{ puid | string }}"
+      TZ: "{{ tz }}"
+    ports:
+      - 1900:1900/udp # dlna
+      - 7359:7359/udp # server announce
+      - 8096:8096/tcp # http
+      - 8920:8920/tcp # https
+    restart_policy: unless-stopped
+    mounts:
+      - source: "{{ config_path }}/jellyfin"
+        target: /config
+        type: bind
+        read_only: false
+      - source: "{{ library_path }}"
+        target: /media
+        type: bind
+        read_only: false
+    networks:
+      - name: "{{ network }}"

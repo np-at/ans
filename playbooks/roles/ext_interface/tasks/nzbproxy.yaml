@@ -1,0 +1,33 @@
+---
+- name: nzbproxy
+  community.docker.docker_container:
+    pull: true
+    state: absent
+    name: nginx-proxy-manager
+    image: jc21/nginx-proxy-manager:latest
+    networks:
+      - name: "{{ network }}"
+    ports:
+      - 80:80 # Public HTTP Port
+      - 81:81 # Admin Web Port
+      - 443:443 # Public HTTPS Port
+    restart_policy: unless-stopped
+    mounts:
+      - source: "{{ config_path }}/nginx-proxy-manager"
+        target: /data
+        type: bind
+        read_only: false
+      - source: "{{ config_path }}/nginx-proxy-manager/letsencrypt"
+        target: /etc/letsencrypt
+        type: bind
+        read_only: false
+    hostname: nginx-proxy-manager
+    env:
+      DB_MYSQL_HOST: mariadb
+      DB_MYSQL_PORT: "3306"
+      DB_MYSQL_USER: "{{ mysql_user }}"
+      DB_MYSQL_PASSWORD: "{{ mysql_password }}"
+      DB_MYSQL_NAME: npm
+      TZ: "{{ tz }}"
+      PUID: "'{{ puid }}'"
+      PGID: "'{{ pgid }}'"

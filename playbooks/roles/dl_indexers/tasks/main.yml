@@ -1,0 +1,7 @@
+# dl_indexers/tasks/main.yml
+---
+- name: nzbget
+  import_tasks: nzbget.yaml
+
+- name: nzbhydra2
+  import_tasks: nzbhydra2.yaml

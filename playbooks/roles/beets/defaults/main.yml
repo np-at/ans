@@ -1,0 +1,5 @@
+# beets/defaults/main.yml
+---
+pgid: 1000
+puid: 1000
+tz: America/Los_Angeles

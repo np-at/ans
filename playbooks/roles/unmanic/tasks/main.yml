@@ -1,0 +1,43 @@
+# unmanic/tasks/main.yml
+---
+- name: Ensure dir exists - unmanic
+  become: true
+  ansible.builtin.file:
+    path: "{{ config_path }}/unmanic"
+    mode: 0777
+    owner: "{{ puid }}"
+    group: "{{ pgid }}"
+    state: directory
+- name: Container unmanic
+  notify: unmanic_session_mod
+  community.docker.docker_container:
+    state: absent
+    pull: true
+    name: unmanic
+    cpus: 1.0
+    env:
+      PGUID: "{{ pgid | string }}"
+      PUID: "{{ puid | string }}"
+      TZ: "{{ tz }}"
+    ports:
+      - 8888/tcp:8888/tcp
+    image: josh5/unmanic:latest
+    networks:
+      - name: "{{ network }}"
+    auto_remove: true
+    command:
+      - sed
+      - "-i"
+      - "-E"
+      - 's/^([ \t]+)self\.level = int\(.*/\1self.level = 10/ig'
+      - /usr/local/lib/python3.8/dist-packages/unmanic/libs/session.py
+    mounts:
+      - source: "{{ config_path }}/unmanic"
+        target: /config
+        type: bind
+        read_only: false
+      - source: "{{ library_path }}"
+        target: /libraries
+        type: bind
+        read_only: false
+  register: unmanic_container_results

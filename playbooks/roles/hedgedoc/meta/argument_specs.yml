@@ -1,0 +1,37 @@
+# roles/beets/meta/argument_specs.yml
+---
+argument_specs:
+  main:
+    short_description: hedgedoc
+    options:
+      pgid:
+        type: str
+        required: false
+        default: 1000
+        description: group id to use
+      puid:
+        type: str
+        required: false
+        default: 1000
+        description: user id to use for running process in container
+      config_path:
+        type: str
+        required: true
+        description: base path on host to bind mount beets config dir to
+      library_path:
+        required: true
+        type: str
+        description: path to media library on host to bind mount into beets container for access
+      network:
+        required: true
+        type: str
+        description: docker network to attach to (external)
+      download_base:
+        required: true
+        type: str
+        description: path to download dir to mount
+      tz:
+        type: str
+        required: false
+        default: America/Los_Angeles
+        description: time zone to tell container to use

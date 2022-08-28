@@ -1,0 +1,7 @@
+# roles/mariadb/handlers/main.yml
+---
+- name: ensure_dbs
+  ansible.builtin.include_tasks: dbs.yml
+  loop: "{{ dbs }}"
+  vars:
+    dbs: "{{ databases | default([]) }}"

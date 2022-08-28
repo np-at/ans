@@ -1,0 +1,29 @@
+# ext_interface/tasks/mariadb.yaml
+---
+- name: mariadb
+  vars:
+    using_mariadb: "{{ ( external_db_host | default(False) ) == False }}"
+  community.docker.docker_container:
+    state: "{{ 'started'  if using_mariadb else 'absent' }}"
+    pull: true
+    name: mariadb
+    hostname: mariadb
+    image: ghcr.io/linuxserver/mariadb:latest
+    networks:
+      - name: "{{ network }}"
+    ports:
+      - 3306:3306
+    restart_policy: unless-stopped
+    mounts:
+      - source: "{{ config_path }}/mariadb"
+        target: /config
+        type: bind
+        read_only: false
+    env:
+      MYSQL_DATABASE: npm # optional
+      MYSQL_USER: "{{ mysql_user }}" # optional
+      MYSQL_PASSWORD: "{{ mysql_password }}" # optional
+      MYSQL_ROOT_PASSWORD: "{{ mysql_root_password }}"
+      PUID: "'{{ puid }}'"
+      PGID: "'{{ pgid }}'"
+      TZ: "{{ tz }}"

@@ -1,0 +1,8 @@
+# media_organizers/defaults/main.yml
+---
+pgid: 1000
+puid: 1000
+config_path: /home/user
+library_path: /srv/media/libraries
+tz: America/Los_Angeles
+network: archon

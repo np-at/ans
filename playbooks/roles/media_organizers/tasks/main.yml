@@ -1,0 +1,16 @@
+# roles/media_organizers/tasks/main.yml
+---
+- name: run bazaar
+  ansible.builtin.import_tasks: bazaar.yml
+    
+- name: Run Lidarr
+  import_tasks: lidarr.yaml
+
+- name: Run Radarr
+  import_tasks: radarr.yaml
+
+- name: Run Readarr
+  import_tasks: readarr.yaml
+
+- name: run sonarr
+  ansible.builtin.import_tasks: sonarr.yaml

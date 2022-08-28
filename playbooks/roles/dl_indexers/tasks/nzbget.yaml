@@ -1,0 +1,37 @@
+---
+# NZBGet
+- name: ensure dir exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ config_path }}/nzbget"
+    mode: 0777
+    owner: "{{ puid }}"
+    group: "{{ pgid }}"
+    state: directory
+- name: nzbget
+
+  community.docker.docker_container:
+    name: nzbget
+    image: lscr.io/linuxserver/nzbget:latest
+    state: started
+    cpus: 1.0
+    pull: true
+    # user: "{{ puid }}:{{ pgid }}"
+    env:
+      PGUID: "{{ pgid | string }}"
+      PUID: "{{ puid | string }}"
+      TZ: "{{ tz }}"
+    ports:
+      - 6789:6789/tcp
+    networks:
+      - name: "{{ network }}"
+    mounts:
+      - source: "{{ config_path }}/nzbget"
+        target: /config
+        type: bind
+        read_only: false
+      - source: "{{ download_base }}"
+        target: /downloads
+        type: bind
+        read_only: false
+    restart_policy: unless-stopped

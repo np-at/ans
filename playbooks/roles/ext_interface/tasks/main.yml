@@ -1,0 +1,9 @@
+# roles/ext_interface/tasks/main.yml
+---
+- name: asdf
+  block:
+    - name: setup db
+      import_tasks: mariadb.yaml
+
+    - name: proxy setup
+      import_tasks: nzbproxy.yaml

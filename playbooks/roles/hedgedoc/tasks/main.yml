@@ -1,0 +1,71 @@
+# hedgedoc/tasks/main.yml
+---
+- name: ensure dir exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ config_path }}/hedgedoc"
+    mode: 0777
+    owner: "{{ puid }}"
+    group: "{{ pgid }}"
+    state: directory
+- name: hedgedoc_db_vol
+  community.docker.docker_volume:
+    volume_name: hedgedoc_db
+    state: present
+  register: hedgedoc_db_vol_results
+- name: hedgedoc db
+  community.docker.docker_container:
+    name: hedgedoc_db
+    state: absent
+    pull: true
+    hostname: hedgedoc_db
+    image: lscr.io/linuxserver/mariadb:latest
+    networks:
+      - name: "{{ network }}"
+    env:
+      PGUID: "{{ pgid | string }}"
+      PUID: "{{ puid | string }}"
+      TZ: "{{ tz }}"
+      MYSQL_ROOT_PASSWORD: 26ffulton
+      MYSQL_DATABASE: hedgedoc
+      MYSQL_PASSWORD: testing1234
+      MYSQL_USER: hedgedoc
+    volumes:
+      - hedgedoc_db:/config
+- name: hedgedoc
+  community.docker.docker_container:
+    name: hedgedoc
+    state: absent
+    pull: true
+    image: ghcr.io/linuxserver/hedgedoc:latest
+    hostname: hedgedoc
+    env:
+      PGUID: "{{ pgid | string }}"
+      PUID: "{{ puid | string }}"
+      TZ: "{{ tz }}"
+      DB_NAME: hedgedoc
+      DB_HOST: hedgedoc_db
+      DB_USER: hedgedoc
+      DB_PORT: "3306"
+      CMD_PORT: "3000"
+      DB_PASS: testing1234
+      # CMD_DOMAIN: localhost
+      CMD_PROTOCOL_USESSL: "false" # optional
+
+    networks:
+      - name: "{{ network }}"
+    ports:
+      - 3000:3000/tcp
+    mounts:
+      - source: "{{ config_path }}/hedgedoc"
+        target: /config
+        read_only: false
+        type: bind
+      - source: "{{ download_base }}"
+        target: /downloads
+        type: bind
+        read_only: false
+      - source: "{{ library_path }}/music"
+        target: /music
+        type: bind
+        read_only: false

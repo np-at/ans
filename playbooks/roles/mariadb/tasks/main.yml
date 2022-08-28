@@ -1,0 +1,44 @@
+---
+- name: ensure db volume
+  community.docker.docker_volume:
+    volume_name: mariadb
+    state: present
+    driver: local
+- name: mariadb container
+  # notify:
+  #   - ensure_dbs
+  community.docker.docker_container:
+    # state: "{{ 'started'  if using_mariadb else 'absent' }}"
+    state: absent
+    pull: true
+    name: mariadb
+    hostname: mariadb
+    image: ghcr.io/linuxserver/mariadb:latest
+    networks:
+      - name: "{{ network }}"
+    ports:
+      - 3306:3306
+    restart_policy: unless-stopped
+    volumes:
+      - mariadb:/config:rw
+    # mounts:
+    #   - source: "{{ config_path }}/mariadb"
+    #     target: "/config"
+    #     type: bind
+    #     read_only: false
+    env:
+      # MYSQL_DATABASE: npm # optional
+      # MYSQL_USER: "{{ mysql_user }}" # optional
+      MYSQL_PASSWORD: "{{ mysql_password }}" # optional
+      MYSQL_ROOT_PASSWORD: "{{ mysql_root_password }}"
+      PUID: "{{ puid }}"
+      PGID: "{{ pgid }}"
+      TZ: "{{ tz }}"
+  register: mariadb_container_results
+- name: ensure_dbs
+  when: false
+  # when: mariadb_container_results.changed
+  ansible.builtin.include_tasks: ../handlers/dbs.yml
+  loop: "{{ dbs }}"
+  vars:
+    dbs: "{{ databases | default({}) | dict2items }}"
