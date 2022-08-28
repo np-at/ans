@@ -5,6 +5,10 @@
     - prometheus_configure
     - prometheus_install
     - prometheus_run
+- name: Ensure jmespath installed
+  ansible.builtin.package:
+    name: jmespath
+    state: present
 
 - name: Ensure dir exists
   become: true

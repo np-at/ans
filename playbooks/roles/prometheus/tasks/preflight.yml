@@ -33,7 +33,7 @@
 
 - name: Set prometheus external metrics path
   ansible.builtin.set_fact:
-    prometheus_metrics_path: "/{{ ( prometheus_web_external_url + '/metrics' ) | regex_replace('^(.*://)?(.*?)/') }}"
+    prometheus_metrics_path: "/{{ (prometheus_web_external_url + '/metrics') | regex_replace('^(.*://)?(.*?)/') }}"
 
 - name: Fail when prometheus_config_flags_extra duplicates parameters set by other variables
   ansible.builtin.fail:
@@ -51,7 +51,7 @@
   when: item in prometheus_config_flags_extra.keys()
 
 - name: Get all file_sd files from scrape_configs
-  set_fact:
+  ansible.builtin.set_fact:
     file_sd_files: "{{ prometheus_scrape_configs | json_query('[*][].file_sd_configs[*][].files[]') }}"
 
 - name: Fail when file_sd targets are not defined in scrape_configs
@@ -89,7 +89,7 @@
       retries: 5
 
     - name: "Set prometheus version to {{ _latest_release.json.tag_name[1:] }}"
-      set_fact:
+      ansible.builtin.set_fact:
         prometheus_version: "{{ _latest_release.json.tag_name[1:] }}"
   when:
     - prometheus_version == "latest"

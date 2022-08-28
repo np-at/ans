@@ -1,6 +1,6 @@
 ---
 # NZBGet
-- name: ensure dir exists
+- name: Ensure nzb config path exists
   become: true
   ansible.builtin.file:
     path: "{{ config_path }}/nzbget"
@@ -8,7 +8,7 @@
     owner: "{{ puid }}"
     group: "{{ pgid }}"
     state: directory
-- name: nzbget
+- name: Nzbget
 
   community.docker.docker_container:
     name: nzbget
