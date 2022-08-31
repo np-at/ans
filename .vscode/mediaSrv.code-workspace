@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.yaml": "ansible",
+			"*.yml": "ansible"
+		},
+		"[ansible]": {
+			"editor.detectIndentation": true,
+			"editor.insertSpaces": true,
+			"editor.tabSize": 2,
+			"editor.quickSuggestions": {
+				"comments": true,
+				"other": true,
+				"strings": true
+			},
+		}
+	}
+}

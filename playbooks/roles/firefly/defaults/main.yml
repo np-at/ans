@@ -1,0 +1,3 @@
+firefly_config_dir: "{{ config_path }}/firefly"
+pgid: 911
+puid: 996

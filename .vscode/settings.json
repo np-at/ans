@@ -1,6 +1,6 @@
 {
-    "files.associations": {
-        "*.yaml": "ansible",
-        "*.yml": "ansible"
-    }
+  "files.associations": {
+    "*.yaml": "ansible",
+    "*.yml": "ansible"
+  }
 }

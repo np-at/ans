@@ -2,7 +2,7 @@
 ---
 - name: run bazaar
   ansible.builtin.import_tasks: bazaar.yml
-    
+
 - name: Run Lidarr
   import_tasks: lidarr.yaml
 

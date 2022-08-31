@@ -5,10 +5,10 @@
 #       - "{{ item.value.name }}"
 #     state: present
 #     check_implicit_admin: true
-- name: add dbs
+- name: Add dbs
   community.docker.docker_container_exec:
     container: mariadb
-    command: mysql -u root --password={{ mysql_root_password }} -e "CREATE DATABASE IF NOT EXISTS {{ item.value.name  }}";
+    command: mysql -u root --password={{ mysql_root_password }} -e "CREATE DATABASE IF NOT EXISTS {{ item.value.name }}";
     # argv:
     #   - mysql
     #   - -u
@@ -16,29 +16,33 @@
     #   - "--password={{ mysql_root_password }}"
     #   - "CREATE DATABASE IF NOT EXISTS {{ item.value.name }};"
 
-- name: add users for {{ item.key }}
-  no_log: true
+- name: Add users for {{ item.key }}
+  no_log: false
   community.docker.docker_container_exec:
     container: mariadb
-    command: mysql -u root --password={{ mysql_root_password }} -e "CREATE USER IF NOT EXISTS {{ item.value.user }}@localhost IDENTIFIED BY '{{ item.value.pass }}';"
-- name: check user for {{ item.key }} - {{ item.value.user }}
-  no_log: true
+    command: mysql -u root --password={{ mysql_root_password }}
+      -e "CREATE USER IF NOT EXISTS {{ item.value.user }}@'{{ item.value.source | default('%', true) }}'
+      IDENTIFIED BY '{{ item.value.pass }}';"
+- name: Check user for {{ item.key }} - {{ item.value.user }}
+  no_log: false
   community.docker.docker_container_exec:
     container: mariadb
-    command: mysql -u root --password={{ mysql_root_password }} -e "SHOW GRANTS FOR {{ item.value.user }}@localhost"
+    command: mysql -u root --password={{ mysql_root_password }}
+      -e "SHOW GRANTS FOR {{ item.value.user }}@'{{ item.value.source | default('%', true) }}'"
   register: priv_result
   changed_when: false
 # - name: debug priv check result
 #   ansible.builtin.debug:
 #     var: priv_result
-- name: add privs for {{ item.key }}
-  no_log: true
+- name: Add privs for {{ item.key }}
+  no_log: false
   vars:
     stmt: GRANT USAGE ON `{{ item.value.name }}`.*
   when: not priv_result.stdout_lines is search(stmt)
   community.docker.docker_container_exec:
     container: mariadb
-    command: mysql -u root --password={{ mysql_root_password }} -e "GRANT ALL PRIVILEGES ON {{ item.value.name }}.* TO {{ item.value.user }}@localhost;  FLUSH PRIVILEGES;"
+    command: mysql -u root --password={{ mysql_root_password }}
+      -e "GRANT ALL PRIVILEGES ON {{ item.value.name }}.* TO {{ item.value.user }}@'{{ item.value.source | default('%', true) }}';  FLUSH PRIVILEGES;"
 
     # argv:
     #   - mysql

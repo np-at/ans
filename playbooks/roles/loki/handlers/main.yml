@@ -1,0 +1,8 @@
+- name: Restart loki
+  community.docker.docker_container:
+    name: loki
+    restart: true
+- name: Restart promtail
+  community.docker.docker_container:
+    name: promtail
+    restart: true

@@ -1,2 +1,1 @@
-collections:
-  - community.docker
+- src: dj-wasabi.telegraf

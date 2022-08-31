@@ -1,0 +1,23 @@
+---
+argument_specs:
+  main:
+    short_description: fireflyiii
+    options:
+      pgid:
+        type: str
+        required: false
+        default: 1000
+        description: group id to use
+      puid:
+        type: str
+        required: false
+        default: 1000
+        description: user id to use for running process in container
+      config_path:
+        type: str
+        required: true
+        description: base path on host to bind mount beets config dir to
+      network:
+        required: true
+        type: str
+        description: docker network to attach to (external)

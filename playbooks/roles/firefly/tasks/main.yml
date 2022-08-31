@@ -1,0 +1,44 @@
+---
+- name: Firefly Preflight
+  become: true
+  block:
+    - name: Ensure config directory present
+      ansible.builtin.file:
+        path: "{{ firefly_config_dir }}"
+        mode: 0644
+        state: directory
+        owner: "{{ puid }}"
+        group: "{{ pgid }}"
+- name: Firefly Main
+  become: true
+  vars:
+    dbhost: "{{ db['host'] | default('mariadb', true) }}"
+    dbport: "{{ db['port'] | default('3306') }}"
+    dbtype: "{{ db['type'] | default('mysql') }}"
+    dbusername: "{{ db['user'] }}"
+    dbpassword: "{{ db['pass'] }}"
+    dbdatabase: "{{ db['name'] }}"
+    app_key: "{{ db['appkey'] }}"
+  block:
+    - name: Debug db
+      ansible.builtin.debug:
+        var: db
+    - name: Firefly Core
+      community.docker.docker_container:
+        name: firefly
+        state: started
+        image: fireflyiii/core:latest
+        network_mode: "{{ network }}"
+        pull: true
+        networks:
+          - name: "{{ network }}"
+        env:
+          DB_HOST: "{{ dbhost }}"
+          DB_PORT: "{{ dbport }}"
+          DB_CONNECTION: "{{ dbtype }}"
+          DB_USERNAME: "{{ dbusername }}"
+          DB_PASSWORD: "{{ dbpassword }}"
+          DB_DATABASE: "{{ dbdatabase }}"
+          APP_KEY: "{{ app_key }}"
+        ports:
+          - 8020:8080

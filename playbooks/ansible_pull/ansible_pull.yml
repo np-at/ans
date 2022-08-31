@@ -80,11 +80,10 @@
         cron_file: ansible-pull
         user: root
         job:
-          "ansible-pull -d {{ workdir }} -U {{ repo_url }} {% if pass_file %} \
-          --vault-password-file={{ pass_file }} {% endif %}{% if inven_file %}--inventory \
+          "ansible-pull -d {{ workdir }} -U {{ repo_url }}{%- if pass_file %} --vault-password-file {{ pass_file }}{% endif %}{% if inven_file %} --inventory \
           {{ inven_file }}{% endif %} {{ playbook_file }} >>{{ logfile }} 2>&1"
         state: present
-        minute: 15
+        minute: 45
 
     - name: Create logrotate entry for ansible-pull.log
       ansible.builtin.template:

@@ -1,0 +1,102 @@
+---
+- name: Loki
+  become: true
+  block:
+    - name: Set up filesystem
+      become: true
+      ansible.builtin.file:
+        path: "{{ loki_config }}"
+        mode: 0777
+        owner: "{{ puid }}"
+        group: "{{ pgid }}"
+        state: directory
+    - name: Create/Update configuration file
+      become: true
+      ansible.builtin.template:
+        src: loki-config.yml.j2
+        dest: "{{ loki_config }}/loki-config.yml"
+        owner: "{{ puid }}"
+        mode: 0644
+      notify: Restart loki
+    - name: Loki container
+      become: true
+      community.docker.docker_container:
+        name: loki
+        image: grafana/loki:latest
+        pull: true
+        restart_policy: unless-stopped
+        state: started
+        network_mode: "{{ network }}"
+        # user: "{{ puid }}"
+        groups:
+          - "{{ pgid }}"
+          - "992"
+        networks:
+          - name: "{{ network }}"
+        ports:
+          - "3100:3100"
+        mounts:
+          - source: "{{ loki_config }}/loki-config.yml"
+            target: "/etc/loki/local-config.yaml"
+            read_only: true
+            type: bind
+          - source: "{{ loki_storage_dir }}"
+            target: "/loki"
+            read_only: false
+            type: bind
+- name: Promtail
+  become: true
+  block:
+    - name: Setup promtail dirs
+      ansible.builtin.file:
+        path: "{{ promtail_config_dir }}"
+        mode: 0777
+        owner: "{{ puid }}"
+        group: "{{ pgid }}"
+        state: directory
+
+    - name: Setup configuration
+      ansible.builtin.template:
+        src: "promtail.yml.j2"
+        dest: "{{ promtail_config_dir }}/promtail.yml"
+        mode: "0777"
+        owner: "{{ puid }}"
+        group: "{{ pgid }}"
+      register: conf_tpl
+      notify:
+        - Restart promtail
+    - name: DEBUG CONF TEMPL
+      ansible.builtin.debug:
+        var: conf_tpl
+    - name: Promtail container
+      community.docker.docker_container:
+        name: promtail
+        image: grafana/promtail:latest
+        pull: true
+        restart_policy: unless-stopped
+        state: started
+        network_mode: "{{ network }}"
+        groups:
+          - "{{ pgid }}"
+          - "992"
+        mounts:
+          - source: "{{ promtail_config_dir }}/promtail.yml"
+            target: "/etc/promtail/config.yml"
+            read_only: true
+            type: bind
+          - source: "/run/log/journal"
+            target: "/run/log/journal"
+            type: bind
+            read_only: true
+          - source: "/var/log/journal"
+            target: "/var/log/journal"
+            type: bind
+            read_only: true
+          - source: "/etc/machine-id"
+            target: "/etc/machine-id"
+            read_only: true
+            type: bind
+          - source: "/var/log"
+            target: "/var/log"
+            type: bind
+            read_only: true

@@ -5,13 +5,13 @@
 #   tasks:
 #     - name: Install roles from requirements.yml
 #       community.general.ansible_galaxy_install:
-#         type: both
-#         requirements_file: /requirements.yml
+#         type: role
+#         name: dj-wasabi.telegraf
 - name: Asdf
   become: true
+  gather_facts: true
   hosts: all
   diff: true
-
   tasks:
     - name: Ensure docker sdk present
       ansible.builtin.pip:
@@ -24,10 +24,27 @@
         driver: bridge
         appends: true
 - name: Roles?
+  gather_facts: false
   vars_files:
     - vars/main.yaml
   hosts: all
   diff: true
+  become: true
+  roles:
+    # - loki
+    # - hedgedoc
+    - beets
+    - dl_indexers
+    # - ombi
+    # - unmanic
+    # - media_server
+    # - ext_interface
+    - media_organizers
+    # - mariadb
+    # - name: firefly
+    #   vars:
+    #     db: "{{ databases['firefly'] }}"
+    # - prometheus
 
   # tasks:
   #   - name: include roles
@@ -49,19 +66,8 @@
   #     delay: 5
   #     retries: 5
   #     loop: "{{ _container_job_instance.results }}"
-  roles:
-    # - hedgedoc
-    - beets
-    - dl_indexers
-    # - ombi
-    # - unmanic
-    - media_server
-    # - ext_interface
-    - media_organizers
-    - mariadb
-    - prometheus
-
 - name: Docker purge
+  become: true
   hosts: all
   tasks:
     - name: Purge
@@ -69,6 +75,7 @@
         images: true
         containers: true
         builder_cache: true
+        volumes: true
 # - name: run docker configs
 #   hosts: all
 #   diff: true
