@@ -7,3 +7,10 @@ lint:
     - gitleaks@8.11.2
     - prettier@2.7.1
     - ansible-lint@6.5.1
+  triggers:
+    - linters:
+        - ansible-lint
+      paths:
+        - playbooks
+      targets:
+        - playbooks
