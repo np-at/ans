@@ -7,7 +7,7 @@
     owner: "{{ puid }}"
     group: "{{ pgid }}"
     state: directory
-- name: bazarr
+- name: Bazarr
   community.docker.docker_container:
     name: bazarr
     image: lscr.io/linuxserver/bazarr:latest

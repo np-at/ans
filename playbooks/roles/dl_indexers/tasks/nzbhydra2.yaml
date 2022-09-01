@@ -1,5 +1,5 @@
 ---
-- name: ensure dir exists
+- name: Ensure dir exists
   become: true
   ansible.builtin.file:
     path: "{{ config_path }}/nzbhydra2"
@@ -10,7 +10,7 @@
 # nzbhydra2
 - name: Set db
   ansible.builtin.set_fact:
-    databases: "{{ databases | default({}) | combine({'nzbhydra2': {'name':'nzbhydra', 'user':'nzbhuser', 'pass':'asdfasdfas'}}) }}"
+    databases: "{{ databases | default({}) | combine({'nzbhydra2': {'name': 'nzbhydra', 'user': 'nzbhuser', 'pass': 'asdfasdfas'}}) }}"
 - name: Nzbhydra2
   community.docker.docker_container:
     name: nzbhydra2

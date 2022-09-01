@@ -1,5 +1,5 @@
 ---
-- name: ensure dir exists
+- name: Ensure dir exists
   become: true
   ansible.builtin.file:
     path: "{{ config_path }}/readarr"
@@ -7,7 +7,7 @@
     owner: "{{ puid }}"
     group: "{{ pgid }}"
     state: directory
-- name: readarr
+- name: Readarr
 
   community.docker.docker_container:
     name: readarr

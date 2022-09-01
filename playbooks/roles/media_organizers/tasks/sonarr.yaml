@@ -1,6 +1,6 @@
 # media_organizers/tasks/sonarr.yaml
 ---
-- name: ensure dir exists
+- name: Ensure dir exists
   become: true
   ansible.builtin.file:
     path: "{{ config_path }}/sonarr"
@@ -8,7 +8,7 @@
     owner: "{{ puid }}"
     group: "{{ pgid }}"
     state: directory
-- name: sonarr
+- name: Sonarr
   community.docker.docker_container:
     name: sonarr
     image: lscr.io/linuxserver/sonarr:latest

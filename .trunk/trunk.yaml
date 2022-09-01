@@ -11,6 +11,6 @@ lint:
     - linters:
         - ansible-lint
       paths:
-        - playbooks
+        - playbooks/**
       targets:
-        - playbooks
+        - "playbooks"

@@ -88,10 +88,10 @@
             target: "/run/log/journal"
             type: bind
             read_only: true
-          - source: "/var/log/journal"
-            target: "/var/log/journal"
-            type: bind
-            read_only: true
+          # - source: "/var/log/journal"
+          #   target: "/var/log/journal"
+          # type: bind
+          # read_only: true
           - source: "/etc/machine-id"
             target: "/etc/machine-id"
             read_only: true
